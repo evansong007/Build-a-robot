@@ -10,13 +10,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HomePage',
-  props: {
-    msg: String
-  }
-}
+<script setup lang="ts">
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

@@ -9,30 +9,35 @@
     </nav>
   </header>
   <main>
-    <HomePage />
+    <RobotBuilder />
+    <!-- <Search /> -->
   </main>
 </template>
 
 <script>
-import HomePage from './components/HomePage.vue'
+//import HomePage from './home/HomePage.vue';
+import RobotBuilder from "./build/RobotBuilder.vue";
+// import Search from "./search/Search.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HomePage,
-  }
-}
+    RobotBuilder,
+    // Search,
+  },
+};
 </script>
 
-<style>
+<style lang="scss">
 body {
   background: linear-gradient(to bottom, #555, #999);
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-
+  font-family: Helvetica, Arial, sans-serif;
 }
+</style>
 
+<style lang="scss" scoped>
 main {
   margin: 0 auto;
   padding: 30px;
