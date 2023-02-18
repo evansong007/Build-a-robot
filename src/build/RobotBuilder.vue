@@ -1,19 +1,21 @@
 <template>
   <div class="content">
     <div class="preview">
-      <div class="preview-content">
-        <div class="top-row">
-          <img :src="selectRobot.head.src" />
+      <CollapsibleSection>
+        <div class="preview-content">
+          <div class="top-row">
+            <img :src="selectRobot.head.src" />
+          </div>
+          <div class="middle-row">
+            <img :src="selectRobot.leftArm.src" class="rotate-left" />
+            <img :src="selectRobot.torso.src" />
+            <img :src="selectRobot.rightArm.src" class="rotate-right" />
+          </div>
+          <div class="bottom-row">
+            <img :src="selectRobot.base.src" />
+          </div>
         </div>
-        <div class="middle-row">
-          <img :src="selectRobot.leftArm.src" class="rotate-left" />
-          <img :src="selectRobot.torso.src" />
-          <img :src="selectRobot.rightArm.src" class="rotate-right" />
-        </div>
-        <div class="bottom-row">
-          <img :src="selectRobot.base.src" />
-        </div>
-      </div>
+      </CollapsibleSection>
       <button class="add-to-cart" @click="addToCart()">Add to Cart</button>
     </div>
 
@@ -77,14 +79,27 @@
 import availablePars from "../data/parts";
 import createdHookMixin from "./created-hook-mixin";
 import PartSelector from "./PartSelector.vue";
+import CollapsibleSection from "../shared/CollapsibleSection.vue";
 
 export default {
+  beforeRouteLeave(to, from, next) {
+    if (this.addedToCart) {
+      next(true);
+    } else {
+      const response = confirm(
+        "You have not added your robot to your cary, are you sure you want to leave"
+      );
+      next(response);
+    }
+  },
   components: {
     PartSelector,
+    CollapsibleSection,
   },
   data() {
     return {
       availablePars,
+      addedToCart: false,
       cart: [],
       selectRobot: {
         head: {},
@@ -111,6 +126,7 @@ export default {
         robot.rightArm.cost +
         robot.base.cost;
       this.cart.push(Object.assign({}, robot, { cost }));
+      this.addedToCart = true;
     },
   },
 };
