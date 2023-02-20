@@ -64,8 +64,8 @@ import PartSelector from "./PartSelector.vue";
 import CollapsibleSection from "../shared/CollapsibleSection.vue";
 
 export default {
-  created(){
-    this.$store.dispatch('getParts');
+  created() {
+    this.$store.dispatch("robots/getParts");
   },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
@@ -96,8 +96,8 @@ export default {
   },
   mixins: [createdHookMixin],
   computed: {
-    availableParts(){
-      return this.$store.state.parts;
+    availableParts() {
+      return this.$store.state.robots.parts;
     },
     saleBorderClass() {
       return this.selectRobot.head.onSale ? "sale-border" : "";
@@ -112,7 +112,9 @@ export default {
         robot.torso.cost +
         robot.rightArm.cost +
         robot.base.cost;
-      this.$store.commit('addRobotToCart',{...robot,cost})
+      this.$store
+        .dispatch("robots/robots/addRobotToCart", { ...robot, cost })
+        .then(() => this.$router.push("/cart"));
       this.addedToCart = true;
     },
   },

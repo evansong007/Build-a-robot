@@ -1,10 +1,17 @@
-export default{
-  create(){
-    this.$store.dispatch('getParts')
+export default {
+  create() {
+    this.$store.dispatch("robots/getParts");
   },
-  computed:{
-    part(){
-      return this.$store.state.parts;
-    }
-  }
-}
+  computed: {
+    parts() {
+      return (
+        this.$store.state.robots.parts || {
+          heads: [],
+          arms: [],
+          torsos: [],
+          bases: [],
+        }
+      );
+    },
+  },
+};
