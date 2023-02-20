@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div v-if="availableParts" class="content">
     <div class="preview">
       <CollapsibleSection>
         <div class="preview-content">
@@ -26,62 +26,47 @@
           <span v-if="selectRobot.head.onSale" class="sale"> Sale!</span>
         </div> -->
       <PartSelector
-        :parts="availablePars.heads"
+        :parts="availableParts.heads"
         position="top"
         @partSelected="(part) => (selectRobot.head = part)"
       />
     </div>
     <div class="middle-row">
       <PartSelector
-        :parts="availablePars.arms"
+        :parts="availableParts.arms"
         position="left"
         @partSelected="(part) => (selectRobot.leftArm = part)"
       />
       <PartSelector
-        :parts="availablePars.torsos"
+        :parts="availableParts.torsos"
         position="center"
         @partSelected="(part) => (selectRobot.torso = part)"
       />
       <PartSelector
-        :parts="availablePars.arms"
+        :parts="availableParts.arms"
         position="right"
         @partSelected="(part) => (selectRobot.rightArm = part)"
       />
     </div>
     <div class="bottom-row">
       <PartSelector
-        :parts="availablePars.bases"
+        :parts="availableParts.bases"
         position="bottom"
         @partSelected="(part) => (selectRobot.base = part)"
       />
-    </div>
-    <div>
-      <h1>Cart</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Robot</th>
-            <th class="cost">Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(robot, index) in cart" :key="index">
-            <td>{{ robot.head.title }}</td>
-            <td class="cost">{{ robot.cost }}</td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
 
 <script>
-import availablePars from "../data/parts";
 import createdHookMixin from "./created-hook-mixin";
 import PartSelector from "./PartSelector.vue";
 import CollapsibleSection from "../shared/CollapsibleSection.vue";
 
 export default {
+  created(){
+    this.$store.dispatch('getParts');
+  },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
       next(true);
@@ -98,7 +83,6 @@ export default {
   },
   data() {
     return {
-      availablePars,
       addedToCart: false,
       cart: [],
       selectRobot: {
@@ -112,6 +96,9 @@ export default {
   },
   mixins: [createdHookMixin],
   computed: {
+    availableParts(){
+      return this.$store.state.parts;
+    },
     saleBorderClass() {
       return this.selectRobot.head.onSale ? "sale-border" : "";
     },
@@ -125,7 +112,7 @@ export default {
         robot.torso.cost +
         robot.rightArm.cost +
         robot.base.cost;
-      this.cart.push(Object.assign({}, robot, { cost }));
+      this.$store.commit('addRobotToCart',{...robot,cost})
       this.addedToCart = true;
     },
   },
@@ -241,15 +228,6 @@ export default {
   width: 210px;
   padding: 3px;
   font-size: 16px;
-}
-td,
-th {
-  text-align: left;
-  padding: 5px;
-  padding-right: 20px;
-}
-.cost {
-  text-align: right;
 }
 
 .sale-border {
